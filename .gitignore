@@ -1,0 +1,117 @@
+# Environment variables
+.env
+.env.*
+backend/.env
+*.env.local
+*.env.production
+*.env.development
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+frontend/dist/
+frontend/build/
+backend/media_outputs/
+
+# Large local assets & external repos (do not commit)
+external/
+backend/external/
+DeepFaceLab/
+media_outputs/
+canvas_sessions/
+chalkboard_sessions/
+backend/memory/
+backend/data/
+data/
+docs/Documents for Reading Folder/
+*.zip
+*.mp4
+*.wav
+*.pdf
+*.docx
+*.rtf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local build caches
+.vite/
+
+# Internal MCP tool repos (local only)
+MCP_System/
+Workspace MCP/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ═══════════════════════════════════════════════════════════════
+# SECURITY - Sensitive files (NEVER commit these!)
+# Owner: Darrell Buttigieg - All Rights Reserved
+# ═══════════════════════════════════════════════════════════════
+
+# API Keys & Credentials
+*.pem
+*.key
+*.pfx
+*.p12
+*.cer
+*.crt
+credentials.json
+api_keys.json
+secrets.json
+*_secret*
+*_api_key*
+*.credentials
+service_account*.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+forms_db/*.json
+
+# Session & Auth
+session_data/
+auth_tokens/
+*.session
+*.token
+cookies.txt
+
+# Personal data
+user_profiles.json
+personal_data/
+private/
+
+# Logs with potential sensitive info
+*.log
+logs/
+
+# Backup files
+*.bak
+*.backup
+*_backup*
+
+# Test credentials
+test_credentials/
+mock_keys/

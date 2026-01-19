@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": ".",
+    },
+    {
+      "path": "..",
+    },
+    {
+      "path": "F:/VS Studio Workspace",
+    },
+  ],
+  "settings": {
+    "editor.codeActions.triggerOnFocusChange": true,
+  },
+}

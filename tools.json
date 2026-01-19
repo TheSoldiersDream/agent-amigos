@@ -1,0 +1,1054 @@
+{
+  "tools": [
+    {
+      "name": "analyze_horse_race",
+      "description": "Perform deep AI analysis on a specific horse race. Provide (track name and race number) OR (race_id e.g. 'palmerbet:12345').",
+      "requires_approval": false
+    },
+    {
+      "name": "get_racing_next_to_jump",
+      "description": "Get real-time 'Next to Jump' upcoming races from multiple providers.",
+      "requires_approval": false
+    },
+    {
+      "name": "get_racing_provider_status",
+      "description": "Check if racing providers (Palmerbet, TAB, etc.) are currently online or blocked.",
+      "requires_approval": false
+    },
+    {
+      "name": "type_text",
+      "description": "Type text character by character",
+      "requires_approval": false
+    },
+    {
+      "name": "type_unicode",
+      "description": "Type text including unicode/special characters",
+      "requires_approval": false
+    },
+    {
+      "name": "press_key",
+      "description": "Press a key (enter, tab, escape, f1-f12, etc.)",
+      "requires_approval": false
+    },
+    {
+      "name": "hotkey",
+      "description": "Press keyboard shortcut like ctrl+c, ctrl+v, alt+tab",
+      "requires_approval": false
+    },
+    {
+      "name": "move_mouse",
+      "description": "Move mouse to x,y position",
+      "requires_approval": false
+    },
+    {
+      "name": "click",
+      "description": "Click at position (optional x,y, button, clicks)",
+      "requires_approval": false
+    },
+    {
+      "name": "double_click",
+      "description": "Double-click at position",
+      "requires_approval": false
+    },
+    {
+      "name": "right_click",
+      "description": "Right-click at position",
+      "requires_approval": false
+    },
+    {
+      "name": "scroll",
+      "description": "Scroll up (positive) or down (negative)",
+      "requires_approval": false
+    },
+    {
+      "name": "drag",
+      "description": "Drag from one position to another",
+      "requires_approval": false
+    },
+    {
+      "name": "get_mouse_position",
+      "description": "Get current mouse x,y",
+      "requires_approval": false
+    },
+    {
+      "name": "screenshot",
+      "description": "Take a screenshot",
+      "requires_approval": false
+    },
+    {
+      "name": "get_screen_size",
+      "description": "Get screen dimensions",
+      "requires_approval": false
+    },
+    {
+      "name": "locate_on_screen",
+      "description": "Find image on screen",
+      "requires_approval": false
+    },
+    {
+      "name": "click_image",
+      "description": "Find and click an image on screen",
+      "requires_approval": false
+    },
+    {
+      "name": "open_browser",
+      "description": "Open automated browser (edge/chrome)",
+      "requires_approval": false
+    },
+    {
+      "name": "open_browser_with_profile",
+      "description": "Open Chrome with saved profile (keeps logins!)",
+      "requires_approval": false
+    },
+    {
+      "name": "attach_to_existing_browser",
+      "description": "Attach to existing Chrome browser (port 9222)",
+      "requires_approval": false
+    },
+    {
+      "name": "ensure_browser_ready",
+      "description": "Smart browser detection - reuse existing or open new",
+      "requires_approval": false
+    },
+    {
+      "name": "close_browser",
+      "description": "Close the browser",
+      "requires_approval": false
+    },
+    {
+      "name": "navigate",
+      "description": "Navigate to a URL",
+      "requires_approval": false
+    },
+    {
+      "name": "get_page_content",
+      "description": "Get text content of current page",
+      "requires_approval": false
+    },
+    {
+      "name": "click_element",
+      "description": "Click element by selector",
+      "requires_approval": false
+    },
+    {
+      "name": "type_in_element",
+      "description": "Type into input field",
+      "requires_approval": false
+    },
+    {
+      "name": "take_browser_screenshot",
+      "description": "Screenshot the browser",
+      "requires_approval": false
+    },
+    {
+      "name": "execute_javascript",
+      "description": "Run JavaScript in browser",
+      "requires_approval": true
+    },
+    {
+      "name": "go_back",
+      "description": "Browser back",
+      "requires_approval": false
+    },
+    {
+      "name": "go_forward",
+      "description": "Browser forward",
+      "requires_approval": false
+    },
+    {
+      "name": "refresh",
+      "description": "Refresh page",
+      "requires_approval": false
+    },
+    {
+      "name": "new_tab",
+      "description": "Open new browser tab",
+      "requires_approval": false
+    },
+    {
+      "name": "close_tab",
+      "description": "Close current tab",
+      "requires_approval": false
+    },
+    {
+      "name": "web_search",
+      "description": "Search the web using DuckDuckGo",
+      "requires_approval": false
+    },
+    {
+      "name": "web_search_news",
+      "description": "Search news",
+      "requires_approval": false
+    },
+    {
+      "name": "fetch_url",
+      "description": "Fetch URL content",
+      "requires_approval": false
+    },
+    {
+      "name": "open_url_default_browser",
+      "description": "Open URL in default browser",
+      "requires_approval": false
+    },
+    {
+      "name": "google_search_in_browser",
+      "description": "Open Google search",
+      "requires_approval": false
+    },
+    {
+      "name": "scrape_url",
+      "description": "Scrape a static web page using CSS selectors",
+      "requires_approval": false
+    },
+    {
+      "name": "scrape_multiple_urls",
+      "description": "Scrape multiple URLs concurrently",
+      "requires_approval": false
+    },
+    {
+      "name": "monitor_webpage_changes",
+      "description": "Detect when a monitored page changes",
+      "requires_approval": false
+    },
+    {
+      "name": "scrape_dynamic_page",
+      "description": "Render a dynamic page with Playwright and return text/html",
+      "requires_approval": false
+    },
+    {
+      "name": "summarize_scraped_content",
+      "description": "Summarize scraped content via LLM",
+      "requires_approval": false
+    },
+    {
+      "name": "shop_search",
+      "description": "Search marketplaces for products and return normalized prices (supports conversion to AUD and PHP)",
+      "requires_approval": false
+    },
+    {
+      "name": "extract_data_from_content",
+      "description": "Extract structured JSON data from text using LLM",
+      "requires_approval": false
+    },
+    {
+      "name": "ask_ai",
+      "description": "Ask the AI a general question or request an explanation",
+      "requires_approval": false
+    },
+    {
+      "name": "write_report",
+      "description": "Write a formatted report (Markdown/HTML) to disk",
+      "requires_approval": false
+    },
+    {
+      "name": "scroll_page",
+      "description": "Scroll page up or down",
+      "requires_approval": false
+    },
+    {
+      "name": "get_current_url",
+      "description": "Get current browser URL",
+      "requires_approval": false
+    },
+    {
+      "name": "find_and_click_by_text",
+      "description": "Find and click element by text",
+      "requires_approval": false
+    },
+    {
+      "name": "find_and_click_by_aria_label",
+      "description": "Click element by aria-label",
+      "requires_approval": false
+    },
+    {
+      "name": "read_post_content",
+      "description": "Read post content on social media",
+      "requires_approval": false
+    },
+    {
+      "name": "like_post",
+      "description": "Like/heart the current post",
+      "requires_approval": false
+    },
+    {
+      "name": "follow_user",
+      "description": "Follow/subscribe to user on current page",
+      "requires_approval": false
+    },
+    {
+      "name": "open_comment_box",
+      "description": "Open the comment input box",
+      "requires_approval": false
+    },
+    {
+      "name": "write_comment",
+      "description": "Write and submit a comment",
+      "requires_approval": false
+    },
+    {
+      "name": "follow_back_comment",
+      "description": "Leave a follow back request comment",
+      "requires_approval": false
+    },
+    {
+      "name": "engage_with_post",
+      "description": "Full engagement: like, follow, comment",
+      "requires_approval": false
+    },
+    {
+      "name": "get_visible_posts",
+      "description": "Get list of visible posts on feed",
+      "requires_approval": false
+    },
+    {
+      "name": "open_facebook_group",
+      "description": "Open saved Facebook group in default browser",
+      "requires_approval": false
+    },
+    {
+      "name": "open_facebook_group_automated",
+      "description": "Open Facebook group for automation",
+      "requires_approval": false
+    },
+    {
+      "name": "get_facebook_group_posts",
+      "description": "Get posts from Facebook group",
+      "requires_approval": false
+    },
+    {
+      "name": "like_facebook_group_post",
+      "description": "Like a post in Facebook group by index",
+      "requires_approval": false
+    },
+    {
+      "name": "comment_on_facebook_group_post",
+      "description": "Comment on Facebook group post",
+      "requires_approval": false
+    },
+    {
+      "name": "create_facebook_group_post",
+      "description": "Create a new post in Facebook group",
+      "requires_approval": false
+    },
+    {
+      "name": "engage_facebook_group_posts",
+      "description": "Auto-engage with multiple group posts",
+      "requires_approval": false
+    },
+    {
+      "name": "scroll_facebook_feed",
+      "description": "Scroll Facebook feed to load more",
+      "requires_approval": false
+    },
+    {
+      "name": "full_facebook_engagement",
+      "description": "MASTER: Scroll, like, follow, comment on ALL posts",
+      "requires_approval": false
+    },
+    {
+      "name": "quick_engage_scroll",
+      "description": "Quick scroll-and-engage loop for continuous growth",
+      "requires_approval": false
+    },
+    {
+      "name": "reply_to_post_comments",
+      "description": "REPLY ENGAGE: Like, follow, reply to commenters on posts",
+      "requires_approval": false
+    },
+    {
+      "name": "get_platform_info",
+      "description": "Get info about a social media platform",
+      "requires_approval": false
+    },
+    {
+      "name": "list_all_platforms",
+      "description": "List all social media platforms in database",
+      "requires_approval": false
+    },
+    {
+      "name": "open_platform",
+      "description": "Open a social media platform by name",
+      "requires_approval": false
+    },
+    {
+      "name": "get_quick_post_url",
+      "description": "Get direct posting URL for platform",
+      "requires_approval": false
+    },
+    {
+      "name": "open_platform_to_post",
+      "description": "Open platform ready to create post",
+      "requires_approval": false
+    },
+    {
+      "name": "get_trending_hashtags",
+      "description": "Get trending hashtags by category",
+      "requires_approval": false
+    },
+    {
+      "name": "get_engagement_phrases",
+      "description": "Get engagement phrases for comments",
+      "requires_approval": false
+    },
+    {
+      "name": "get_platform_limits",
+      "description": "Get character limits for platform",
+      "requires_approval": false
+    },
+    {
+      "name": "get_facebook_groups",
+      "description": "Get saved Facebook groups",
+      "requires_approval": false
+    },
+    {
+      "name": "open_all_platforms",
+      "description": "Open all major social platforms",
+      "requires_approval": false
+    },
+    {
+      "name": "remember_fact",
+      "description": "Remember a new fact permanently",
+      "requires_approval": false
+    },
+    {
+      "name": "remember_preference",
+      "description": "Remember user preference",
+      "requires_approval": false
+    },
+    {
+      "name": "get_facts_about",
+      "description": "Get all facts about a topic",
+      "requires_approval": false
+    },
+    {
+      "name": "get_all_memories",
+      "description": "Get all stored memories",
+      "requires_approval": false
+    },
+    {
+      "name": "get_memory_summary",
+      "description": "Get summary of agent memories",
+      "requires_approval": false
+    },
+    {
+      "name": "recall_topic",
+      "description": "Mark topic as discussed",
+      "requires_approval": false
+    },
+    {
+      "name": "read_file",
+      "description": "Read file contents",
+      "requires_approval": false
+    },
+    {
+      "name": "read_lines",
+      "description": "Read specific lines from file",
+      "requires_approval": false
+    },
+    {
+      "name": "write_file",
+      "description": "Write content to file (overwrites)",
+      "requires_approval": true
+    },
+    {
+      "name": "append_file",
+      "description": "Append to file",
+      "requires_approval": false
+    },
+    {
+      "name": "create_file",
+      "description": "Create new file",
+      "requires_approval": true
+    },
+    {
+      "name": "create_directory",
+      "description": "Create directory",
+      "requires_approval": false
+    },
+    {
+      "name": "copy_file",
+      "description": "Copy file",
+      "requires_approval": false
+    },
+    {
+      "name": "move_file",
+      "description": "Move/rename file",
+      "requires_approval": true
+    },
+    {
+      "name": "rename",
+      "description": "Rename file/directory",
+      "requires_approval": true
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete a file",
+      "requires_approval": true
+    },
+    {
+      "name": "delete_directory",
+      "description": "Delete a directory",
+      "requires_approval": true
+    },
+    {
+      "name": "file_exists",
+      "description": "Check if file exists",
+      "requires_approval": false
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get file metadata",
+      "requires_approval": false
+    },
+    {
+      "name": "list_directory",
+      "description": "List directory contents",
+      "requires_approval": false
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files by pattern",
+      "requires_approval": false
+    },
+    {
+      "name": "search_in_files",
+      "description": "Search text within files",
+      "requires_approval": false
+    },
+    {
+      "name": "get_current_directory",
+      "description": "Get current directory",
+      "requires_approval": false
+    },
+    {
+      "name": "create_document",
+      "description": "Create formatted document (letter, report, proposal)",
+      "requires_approval": false
+    },
+    {
+      "name": "take_memo",
+      "description": "Create a memo/quick note with priority",
+      "requires_approval": false
+    },
+    {
+      "name": "write_draft",
+      "description": "Save draft for later (email, post, article, speech)",
+      "requires_approval": false
+    },
+    {
+      "name": "quick_note",
+      "description": "Quickly jot down a note",
+      "requires_approval": false
+    },
+    {
+      "name": "create_meeting_notes",
+      "description": "Create formatted meeting notes",
+      "requires_approval": false
+    },
+    {
+      "name": "create_todo_list",
+      "description": "Create a to-do list",
+      "requires_approval": false
+    },
+    {
+      "name": "list_secretary_files",
+      "description": "List all secretary-created files",
+      "requires_approval": false
+    },
+    {
+      "name": "run_command",
+      "description": "Execute shell command",
+      "requires_approval": true
+    },
+    {
+      "name": "run_powershell",
+      "description": "Execute PowerShell script",
+      "requires_approval": true
+    },
+    {
+      "name": "start_program",
+      "description": "Start a program",
+      "requires_approval": true
+    },
+    {
+      "name": "open_file_with_app",
+      "description": "Open file with default app",
+      "requires_approval": false
+    },
+    {
+      "name": "copy_to_clipboard",
+      "description": "Copy text to clipboard",
+      "requires_approval": false
+    },
+    {
+      "name": "paste_from_clipboard",
+      "description": "Get clipboard content",
+      "requires_approval": false
+    },
+    {
+      "name": "get_system_info",
+      "description": "Get system information",
+      "requires_approval": false
+    },
+    {
+      "name": "get_system_stats",
+      "description": "Get CPU/memory/disk usage",
+      "requires_approval": false
+    },
+    {
+      "name": "list_processes",
+      "description": "List running processes",
+      "requires_approval": false
+    },
+    {
+      "name": "kill_process",
+      "description": "Kill a process",
+      "requires_approval": true
+    },
+    {
+      "name": "get_env_var",
+      "description": "Get environment variable",
+      "requires_approval": false
+    },
+    {
+      "name": "show_notification",
+      "description": "Show system notification",
+      "requires_approval": false
+    },
+    {
+      "name": "get_datetime",
+      "description": "Get current date/time",
+      "requires_approval": false
+    },
+    {
+      "name": "generate_image",
+      "description": "Create AI images from a text prompt",
+      "requires_approval": false
+    },
+    {
+      "name": "open_image",
+      "description": "Get info about an image file",
+      "requires_approval": false
+    },
+    {
+      "name": "resize_image",
+      "description": "Resize an image to specified dimensions",
+      "requires_approval": false
+    },
+    {
+      "name": "crop_image",
+      "description": "Crop an image to specified box",
+      "requires_approval": false
+    },
+    {
+      "name": "rotate_image",
+      "description": "Rotate an image by degrees",
+      "requires_approval": false
+    },
+    {
+      "name": "convert_image_format",
+      "description": "Convert image to different format (PNG, JPEG, WEBP)",
+      "requires_approval": false
+    },
+    {
+      "name": "apply_image_filter",
+      "description": "Apply filter (BLUR, SHARPEN, EMBOSS, etc)",
+      "requires_approval": false
+    },
+    {
+      "name": "adjust_image",
+      "description": "Adjust brightness, contrast, saturation, sharpness",
+      "requires_approval": false
+    },
+    {
+      "name": "create_thumbnail",
+      "description": "Create thumbnail of an image",
+      "requires_approval": false
+    },
+    {
+      "name": "list_images",
+      "description": "List all images in media directory",
+      "requires_approval": false
+    },
+    {
+      "name": "create_video_from_images",
+      "description": "Turn multiple image paths into a Facebook-ready mp4",
+      "requires_approval": false
+    },
+    {
+      "name": "create_video_from_prompt",
+      "description": "Generate a short AI video entirely from a text prompt",
+      "requires_approval": false
+    },
+    {
+      "name": "animate_image",
+      "description": "Animate a still image with a Ken Burns style pan/zoom",
+      "requires_approval": false
+    },
+    {
+      "name": "generate_video_from_image",
+      "description": "Generate AI video with REAL MOTION from image (person walking, animal moving)",
+      "requires_approval": false
+    },
+    {
+      "name": "generate_ai_video",
+      "description": "Generate REAL AI video from text prompt using cloud APIs (WAN, Minimax, LTX models)",
+      "requires_approval": false
+    },
+    {
+      "name": "generate_ai_video_from_image",
+      "description": "Generate REAL AI video from image using cloud APIs (WAN, Minimax models)",
+      "requires_approval": false
+    },
+    {
+      "name": "get_video_info",
+      "description": "Get information about a video file",
+      "requires_approval": false
+    },
+    {
+      "name": "trim_video",
+      "description": "Trim video from start to end time",
+      "requires_approval": false
+    },
+    {
+      "name": "merge_videos",
+      "description": "Concatenate multiple videos into one",
+      "requires_approval": false
+    },
+    {
+      "name": "resize_video",
+      "description": "Resize video to specified dimensions",
+      "requires_approval": false
+    },
+    {
+      "name": "add_audio_to_video",
+      "description": "Add audio track to a video",
+      "requires_approval": false
+    },
+    {
+      "name": "convert_video",
+      "description": "Convert video format (mp4, avi, webm, mov)",
+      "requires_approval": false
+    },
+    {
+      "name": "extract_frame",
+      "description": "Extract a single frame from video",
+      "requires_approval": false
+    },
+    {
+      "name": "list_videos",
+      "description": "List all videos in media directory",
+      "requires_approval": false
+    },
+    {
+      "name": "get_audio_info",
+      "description": "Get info about audio file (MP3, WAV)",
+      "requires_approval": false
+    },
+    {
+      "name": "convert_audio",
+      "description": "Convert audio format (mp3, wav, ogg, flac)",
+      "requires_approval": false
+    },
+    {
+      "name": "trim_audio",
+      "description": "Trim audio from start to end (milliseconds)",
+      "requires_approval": false
+    },
+    {
+      "name": "merge_audio",
+      "description": "Merge multiple audio files into one",
+      "requires_approval": false
+    },
+    {
+      "name": "adjust_audio_volume",
+      "description": "Adjust audio volume by decibels",
+      "requires_approval": false
+    },
+    {
+      "name": "add_fade",
+      "description": "Add fade in/out effects to audio",
+      "requires_approval": false
+    },
+    {
+      "name": "extract_audio_from_video",
+      "description": "Extract audio track from video",
+      "requires_approval": false
+    },
+    {
+      "name": "list_audio_files",
+      "description": "List all audio files in media directory",
+      "requires_approval": false
+    },
+    {
+      "name": "play_media",
+      "description": "Open media file with default system player",
+      "requires_approval": false
+    },
+    {
+      "name": "list_game_processes",
+      "description": "List all running game processes",
+      "requires_approval": false
+    },
+    {
+      "name": "find_game_window",
+      "description": "Find game windows by title",
+      "requires_approval": false
+    },
+    {
+      "name": "attach_to_process",
+      "description": "Attach to a game process for memory ops",
+      "requires_approval": false
+    },
+    {
+      "name": "scan_memory_for_value",
+      "description": "Scan memory for a specific value",
+      "requires_approval": false
+    },
+    {
+      "name": "write_memory",
+      "description": "Write value to memory address",
+      "requires_approval": true
+    },
+    {
+      "name": "freeze_value",
+      "description": "Freeze a memory value constant",
+      "requires_approval": false
+    },
+    {
+      "name": "unfreeze_value",
+      "description": "Stop freezing a memory value",
+      "requires_approval": false
+    },
+    {
+      "name": "list_frozen_values",
+      "description": "List all frozen memory values",
+      "requires_approval": false
+    },
+    {
+      "name": "create_mod_template",
+      "description": "Create a mod template for a game",
+      "requires_approval": false
+    },
+    {
+      "name": "list_mod_files",
+      "description": "List mod files for a game",
+      "requires_approval": false
+    },
+    {
+      "name": "backup_game_files",
+      "description": "Backup game files before modding",
+      "requires_approval": false
+    },
+    {
+      "name": "restore_game_files",
+      "description": "Restore game files from backup",
+      "requires_approval": true
+    },
+    {
+      "name": "edit_game_config",
+      "description": "Edit game configuration files",
+      "requires_approval": false
+    },
+    {
+      "name": "game_trainer_help",
+      "description": "Show game trainer help",
+      "requires_approval": false
+    },
+    {
+      "name": "get_profile",
+      "description": "Get user profile data from forms database",
+      "requires_approval": false
+    },
+    {
+      "name": "get_profile_field",
+      "description": "Get specific field from profile (e.g., contact.email)",
+      "requires_approval": false
+    },
+    {
+      "name": "update_profile_field",
+      "description": "Update a field in user profile (e.g., contact.email, personal.first_name)",
+      "requires_approval": false
+    },
+    {
+      "name": "list_profiles",
+      "description": "List all profile names in the database",
+      "requires_approval": false
+    },
+    {
+      "name": "create_profile",
+      "description": "Create a new empty profile",
+      "requires_approval": false
+    },
+    {
+      "name": "start_screen_recording",
+      "description": "Start recording screen for social media content",
+      "requires_approval": false
+    },
+    {
+      "name": "stop_screen_recording",
+      "description": "Stop screen recording and save video",
+      "requires_approval": false
+    },
+    {
+      "name": "get_recording_status",
+      "description": "Check if currently recording",
+      "requires_approval": false
+    },
+    {
+      "name": "list_recordings",
+      "description": "List all screen recordings",
+      "requires_approval": false
+    },
+    {
+      "name": "start_audio_recording",
+      "description": "Start voice/microphone recording",
+      "requires_approval": false
+    },
+    {
+      "name": "stop_audio_recording",
+      "description": "Stop audio recording",
+      "requires_approval": false
+    },
+    {
+      "name": "record_window",
+      "description": "Record a specific window by title",
+      "requires_approval": false
+    },
+    {
+      "name": "list_audio_devices",
+      "description": "List available microphones and audio devices",
+      "requires_approval": false
+    },
+    {
+      "name": "check_ffmpeg",
+      "description": "Check if FFmpeg is installed for recording",
+      "requires_approval": false
+    },
+    {
+      "name": "store_document_file",
+      "description": "Store a file (PDF, image, video, text) to the document database for future reference",
+      "requires_approval": false
+    },
+    {
+      "name": "store_url_to_documents",
+      "description": "Store a URL with its content to the document database",
+      "requires_approval": false
+    },
+    {
+      "name": "store_plan",
+      "description": "Store a plan or strategy document for future reference",
+      "requires_approval": false
+    },
+    {
+      "name": "search_stored_documents",
+      "description": "Search stored documents by query, filter by type (image, video, pdf, text, url, plan)",
+      "requires_approval": false
+    },
+    {
+      "name": "get_stored_document",
+      "description": "Get a stored document by its ID",
+      "requires_approval": false
+    },
+    {
+      "name": "read_stored_document_content",
+      "description": "Read the text content of a stored document",
+      "requires_approval": false
+    },
+    {
+      "name": "get_relevant_stored_documents",
+      "description": "Get stored documents relevant to a task for context",
+      "requires_approval": false
+    },
+    {
+      "name": "get_document_storage_stats",
+      "description": "Get statistics about stored documents",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_draw_shape",
+      "description": "Draw a shape (line, rectangle, ellipse, arrow) on the ChalkBoard canvas",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_draw_text",
+      "description": "Add text to the ChalkBoard canvas at x,y position",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_floor_plan",
+      "description": "Generate a floor plan with rooms on the ChalkBoard",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_flowchart",
+      "description": "Generate a flowchart diagram on the ChalkBoard",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_poem",
+      "description": "Render a poem with artistic typography on the ChalkBoard",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_clear",
+      "description": "Clear the entire ChalkBoard canvas",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_set_mode",
+      "description": "Switch ChalkBoard mode: SKETCH, DIAGRAM, CAD, MEDIA, TEXT",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_export",
+      "description": "Export the ChalkBoard canvas (png, svg, pdf, dxf, json)",
+      "requires_approval": false
+    },
+    {
+      "name": "chalkboard_get_commands",
+      "description": "Get all pending ChalkBoard commands",
+      "requires_approval": false
+    },
+    {
+      "name": "agent_get_itineraries",
+      "description": "Get all parsed travel itineraries and appointments in chronological sequence",
+      "requires_approval": false
+    },
+    {
+      "name": "agent_get_itinerary_timeline",
+      "description": "Generate a plain-English, smart-sorted itinerary timeline across all saved itineraries",
+      "requires_approval": false
+    },
+    {
+      "name": "wait",
+      "description": "Wait for N seconds",
+      "requires_approval": false
+    },
+    {
+      "name": "analyze_horse_race",
+      "description": "Analyze horse racing data to provide probabilistic insights, likelihood scores, and market analysis. Does not place bets; external network/scraping requires approval.",
+      "requires_approval": true
+    },
+    {
+      "name": "control_racesight",
+      "description": "Control the RaceSight GUI console. Use 'open', 'close', or 'analyze' (with track and race_number).",
+      "requires_approval": false
+    },
+    {
+      "name": "horse_get_next_to_jump",
+      "description": "Get the next horse races scheduled to start soon across all tracks",
+      "requires_approval": false
+    },
+    {
+      "name": "horse_get_track_schedule",
+      "description": "Get the full race schedule for a specific track. Args: track (track name)",
+      "requires_approval": false
+    },
+    {
+      "name": "horse_get_runners",
+      "description": "Get detailed information about runners in a specific race. Args: race_id (unique identifier)",
+      "requires_approval": false
+    }
+  ]
+}

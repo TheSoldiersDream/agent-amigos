@@ -1,0 +1,29 @@
+{
+  "autonomyEnabled": true,
+  "requireConfirmation": false,
+  "autoApproveSafeTools": true,
+  "allowedActions": [
+    "filesystem",
+    "terminal",
+    "network-local",
+    "code-modification",
+    "canvas",
+    "read-only",
+    "memory",
+    "search",
+    "browser",
+    "input",
+    "screen",
+    "clipboard",
+    "notification",
+    "general"
+  ],
+  "blockedActions": [
+    "system-level-delete",
+    "credential-exfiltration"
+  ],
+  "maxCommandDepth": 10,
+  "mode": "SEMI-AUTONOMY",
+  "killSwitch": false,
+  "autonomyMode": "full"
+}

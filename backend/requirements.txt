@@ -1,0 +1,52 @@
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.30,<1.0
+pydantic>=1.10,<2.0
+requests>=2.31,<3.0
+aiohttp>=3.9,<4.0
+duckduckgo_search>=5.3,<6.0
+selenium>=4.15,<5.0
+webdriver-manager>=4.0,<5.0
+beautifulsoup4>=4.12,<5.0
+lxml>=5.0,<6.0
+playwright>=1.48,<2.0
+pyautogui>=0.9.54,<1.0
+pyperclip>=1.8,<2.0
+pillow>=10.1,<11.0
+psutil>=5.9,<6.0
+moviepy>=1.0,<2.0
+numpy>=1.26,<2.0
+pydub>=0.25,<1.0
+imageio>=2.31,<3.0
+imageio-ffmpeg>=0.4,<1.0
+librosa>=0.10,<0.11
+soundfile>=0.12,<1.0
+fastmcp>=2.0,<3.0
+tavily-python>=0.3,<1.0
+pynput>=1.7,<2.0
+pytesseract>=0.3.10,<1.0
+opencv-python>=4.8,<5.0
+
+# Open-Source AI Enhancement (2025)
+ollama>=0.1.0                 # Ollama Python client for local models
+chromadb>=0.4.0               # Vector database for memory and RAG
+llama-index>=0.9.0            # LLM abstraction and RAG framework
+instructor>=0.6.0             # Structured outputs with LLMs
+pydantic-ai>=0.3.0            # Type-safe LLM interactions
+
+# Advanced Agent Capabilities
+autogen>=0.2.0                # Multi-agent framework
+crewai>=0.1.0                 # Team-based agents
+dspy-ai>=2.4.0                # Program synthesis and reasoning
+langchain>=0.1.0              # LLM orchestration
+langgraph>=0.1.0              # Graph-based agent execution
+
+# Model Optimization
+bitsandbytes>=0.41.0          # 8-bit quantization
+peft>=0.4.0                   # Parameter-efficient fine-tuning
+transformers>=4.36.0          # Hugging Face models
+torch>=2.0.0                  # PyTorch (if not already installed)
+
+# Utilities
+python-dotenv>=1.0.0          # Environment management
+tenacity>=8.0.0               # Retry logic
+

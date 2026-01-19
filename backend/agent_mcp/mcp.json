@@ -1,0 +1,44 @@
+{
+  "mcp_version": "1.0.0",
+  "servers": [
+    {
+      "name": "amigos-universal",
+      "command": "python",
+      "args": ["-m", "backend.agent_mcp.server"],
+      "env": {
+        "PYTHONPATH": "./backend",
+        "MCP_TRANSPORT": "stdio",
+        "MCP_LOG_LEVEL": "ERROR",
+        "MCP_LOG_DIR": "./backend/agent_mcp/logs"
+      }
+    },
+    {
+      "name": "github",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    {
+      "name": "horse-racing-intelligence",
+      "command": "python",
+      "args": [
+        "-m",
+        "uvicorn",
+        "horse_racing_intelligence.app:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "65261"
+      ],
+      "env": {
+        "PYTHONPATH": "./backend"
+      }
+    }
+  ],
+  "global_config": {
+    "log_level": "ERROR",
+    "timeout": 300
+  }
+}

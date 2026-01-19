@@ -1,0 +1,1116 @@
+[
+  {
+    "name": "macro_autonomous",
+    "description": "Execute autonomous browser automation from natural language intent. Works across all websites using visual perception, DOM analysis, and self-healing execution. Converts goals like 'log in and download my latest invoice' into real browser actions.",
+    "category": "automation",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "description": "Natural language description of what to accomplish (e.g., 'Find and click the submit button', 'Fill out the contact form')"
+        },
+        "domain": {
+          "type": "string",
+          "description": "Target website domain for safety validation (optional)"
+        },
+        "permission_scope": {
+          "type": "string",
+          "enum": ["read", "write", "submit", "payment"],
+          "description": "Permission level: read (navigate/view), write (click/type), submit (forms), payment (transactions)"
+        },
+        "confirmation_required": {
+          "type": "boolean",
+          "description": "Require user approval for sensitive actions (default: true)"
+        },
+        "max_steps": {
+          "type": "integer",
+          "description": "Maximum execution steps before timeout (default: 50)"
+        }
+      },
+      "required": ["goal"]
+    }
+  },
+  {
+    "name": "type_text",
+    "description": "Type text on the keyboard character by character",
+    "category": "keyboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "Text to type" },
+        "interval": {
+          "type": "number",
+          "description": "Delay between characters (default 0.02)"
+        }
+      },
+      "required": ["text"]
+    }
+  },
+  {
+    "name": "press_key",
+    "description": "Press a single key (enter, tab, escape, f1-f12, space, backspace, delete, up, down, left, right)",
+    "category": "keyboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "Key to press" }
+      },
+      "required": ["key"]
+    }
+  },
+  {
+    "name": "hotkey",
+    "description": "Press a keyboard shortcut like ctrl+c, ctrl+v, alt+tab, ctrl+shift+s",
+    "category": "keyboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keys to press together"
+        }
+      },
+      "required": ["keys"]
+    }
+  },
+  {
+    "name": "click",
+    "description": "Click the mouse at optional x,y position",
+    "category": "mouse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "integer", "description": "X coordinate (optional)" },
+        "y": { "type": "integer", "description": "Y coordinate (optional)" },
+        "button": {
+          "type": "string",
+          "enum": ["left", "right", "middle"],
+          "description": "Mouse button"
+        },
+        "clicks": { "type": "integer", "description": "Number of clicks" }
+      }
+    }
+  },
+  {
+    "name": "move_mouse",
+    "description": "Move mouse to x,y screen position",
+    "category": "mouse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "integer", "description": "X coordinate" },
+        "y": { "type": "integer", "description": "Y coordinate" },
+        "duration": {
+          "type": "number",
+          "description": "Movement duration in seconds"
+        }
+      },
+      "required": ["x", "y"]
+    }
+  },
+  {
+    "name": "scroll",
+    "description": "Scroll the mouse wheel up (positive) or down (negative)",
+    "category": "mouse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "Scroll amount (positive=up, negative=down)"
+        }
+      },
+      "required": ["amount"]
+    }
+  },
+  {
+    "name": "screenshot",
+    "description": "Take a screenshot of the screen",
+    "category": "screen",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "save_path": {
+          "type": "string",
+          "description": "Path to save screenshot (optional)"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_screen_size",
+    "description": "Get the screen dimensions",
+    "category": "screen",
+    "parameters": { "type": "object", "properties": {} }
+  },
+  {
+    "name": "web_search",
+    "description": "Search the web using DuckDuckGo and get results (no browser needed)",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string", "description": "Search query" },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum results (default 5)"
+        }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "shop_search",
+    "description": "Search for products (no buying) and return extracted pricing with currency conversion (e.g., AUD/PHP)",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "What to shop for (e.g., 'Starlink kit Philippines')"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region hint (default 'PH')"
+        },
+        "currencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Currencies to convert to (default ['AUD','PHP'])"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Max number of results to return (default 8)"
+        },
+        "dynamic_fallback": {
+          "type": "boolean",
+          "description": "If true, use Playwright rendering when static scraping doesn't show a price"
+        }
+      },
+      "required": ["query"]
+    }
+  },
+  {
+    "name": "open_browser",
+    "description": "Open an automated browser for web automation",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "browser": {
+          "type": "string",
+          "enum": ["edge", "chrome"],
+          "description": "Browser type"
+        },
+        "headless": {
+          "type": "boolean",
+          "description": "Run without visible window"
+        }
+      }
+    }
+  },
+  {
+    "name": "navigate",
+    "description": "Navigate the browser to a URL",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL to navigate to" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "click_element",
+    "description": "Click an element on the web page by CSS selector",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "selector": {
+          "type": "string",
+          "description": "CSS selector or XPath"
+        },
+        "by": {
+          "type": "string",
+          "enum": ["css", "xpath", "id", "name"],
+          "description": "Selector type"
+        }
+      },
+      "required": ["selector"]
+    }
+  },
+  {
+    "name": "type_in_element",
+    "description": "Type text into an input field on a web page",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "selector": {
+          "type": "string",
+          "description": "CSS selector for input"
+        },
+        "text": { "type": "string", "description": "Text to type" },
+        "press_enter": {
+          "type": "boolean",
+          "description": "Press enter after typing"
+        }
+      },
+      "required": ["selector", "text"]
+    }
+  },
+  {
+    "name": "get_page_content",
+    "description": "Get the text content of the current web page",
+    "category": "web",
+    "parameters": { "type": "object", "properties": {} }
+  },
+  {
+    "name": "open_url_default_browser",
+    "description": "Open a URL in the user's default browser",
+    "category": "web",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL to open" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "scrape_url",
+    "description": "Scrape a static web page using CSS selectors",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Page to scrape" },
+        "selectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "CSS selectors to capture"
+        },
+        "include_text": {
+          "type": "boolean",
+          "description": "Return clean text"
+        },
+        "include_links": {
+          "type": "boolean",
+          "description": "Include anchor links"
+        },
+        "include_html": {
+          "type": "boolean",
+          "description": "Return HTML for matches"
+        },
+        "max_links": { "type": "integer", "description": "Maximum links" },
+        "timeout": { "type": "integer", "description": "Timeout in seconds" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "scrape_multiple_urls",
+    "description": "Scrape multiple URLs concurrently",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "urls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of target URLs"
+        },
+        "selectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional CSS selectors"
+        },
+        "include_text": { "type": "boolean" },
+        "include_links": { "type": "boolean" },
+        "include_html": { "type": "boolean" },
+        "timeout": { "type": "integer" }
+      },
+      "required": ["urls"]
+    }
+  },
+  {
+    "name": "monitor_webpage_changes",
+    "description": "Monitor and diff webpage content over time",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "URL to monitor" },
+        "selectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional CSS selectors"
+        },
+        "include_html": { "type": "boolean" },
+        "include_links": { "type": "boolean" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "scrape_dynamic_page",
+    "description": "Render and scrape dynamic pages using Playwright",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "description": "Page to render" },
+        "wait_for_selector": {
+          "type": "string",
+          "description": "CSS selector to wait for"
+        },
+        "wait_timeout": { "type": "number", "description": "Seconds to wait" },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "selector": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "required": ["type"]
+          },
+          "description": "Optional scripted page actions"
+        },
+        "headless": {
+          "type": "boolean",
+          "description": "Run headless browser"
+        },
+        "screenshot": { "type": "boolean", "description": "Capture screenshot" }
+      },
+      "required": ["url"]
+    }
+  },
+  {
+    "name": "summarize_scraped_content",
+    "description": "Summarize scraped text with the configured LLM",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "content": { "type": "string", "description": "Text to summarize" },
+        "instructions": {
+          "type": "string",
+          "description": "Optional summary instructions"
+        },
+        "max_words": {
+          "type": "integer",
+          "description": "Target summary length"
+        }
+      },
+      "required": ["content"]
+    }
+  },
+  {
+    "name": "extract_data_from_content",
+    "description": "Extract structured JSON data from text using LLM",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Text content to process"
+        },
+        "schema_description": {
+          "type": "string",
+          "description": "Description of fields to extract (e.g. 'list of products with name and price')"
+        }
+      },
+      "required": ["content", "schema_description"]
+    }
+  },
+  {
+    "name": "ask_ai",
+    "description": "Ask the AI a general question or request an explanation",
+    "category": "scraper",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "The question to ask"
+        },
+        "context": {
+          "type": "string",
+          "description": "Optional context to provide to the AI"
+        }
+      },
+      "required": ["question"]
+    }
+  },
+  {
+    "name": "write_report",
+    "description": "Write a formatted report (Markdown/HTML) to disk",
+    "category": "files",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Report title" },
+        "content": { "type": "string", "description": "Report body content" },
+        "filename": { "type": "string", "description": "Optional filename" },
+        "format": {
+          "type": "string",
+          "enum": ["markdown", "html"],
+          "description": "Output format"
+        }
+      },
+      "required": ["title", "content"]
+    }
+  },
+  {
+    "name": "chalkboard_draw_shape",
+    "description": "Draw a shape on the ChalkBoard canvas (line, rectangle, ellipse, arrow)",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "shape": {
+          "type": "string",
+          "enum": ["line", "rectangle", "ellipse", "arrow"]
+        },
+        "coordinates": {
+          "type": "object",
+          "description": "Coordinates e.g., x1,y1,x2,y2 for line or x,y,width,height for rect"
+        },
+        "style": {
+          "type": "object",
+          "properties": {
+            "strokeColor": { "type": "string" },
+            "fillColor": { "type": "string" },
+            "strokeWidth": { "type": "number" }
+          }
+        },
+        "thought": { "type": "string" }
+      },
+      "required": ["shape", "coordinates"]
+    }
+  },
+  {
+    "name": "chalkboard_draw_text",
+    "description": "Add text to the ChalkBoard canvas",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "fontSize": { "type": "number" },
+        "color": { "type": "string" },
+        "thought": { "type": "string" }
+      },
+      "required": ["text", "x", "y"]
+    }
+  },
+  {
+    "name": "chalkboard_floor_plan",
+    "description": "Generate a floor plan on the ChalkBoard",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "rooms": { "type": "array", "items": { "type": "object" } },
+        "scale": { "type": "number" },
+        "thought": { "type": "string" }
+      },
+      "required": ["rooms"]
+    }
+  },
+  {
+    "name": "chalkboard_flowchart",
+    "description": "Generate a flowchart on the ChalkBoard",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "nodes": { "type": "array", "items": { "type": "object" } },
+        "connections": { "type": "array", "items": { "type": "object" } },
+        "layout": { "type": "string" },
+        "thought": { "type": "string" }
+      },
+      "required": ["nodes", "connections"]
+    }
+  },
+  {
+    "name": "chalkboard_poem",
+    "description": "Render a poem on the ChalkBoard",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "lines": { "type": "array", "items": { "type": "string" } },
+        "style": {
+          "type": "string",
+          "enum": ["classic", "modern", "handwritten", "gothic"]
+        },
+        "thought": { "type": "string" }
+      },
+      "required": ["title", "lines"]
+    }
+  },
+  {
+    "name": "chalkboard_export",
+    "description": "Export the ChalkBoard canvas to file (png, svg, pdf, dxf, json)",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["png", "svg", "pdf", "dxf", "json"]
+        },
+        "filename": { "type": "string" }
+      },
+      "required": ["format"]
+    }
+  },
+  {
+    "name": "chalkboard_control",
+    "description": "Control ChalkBoard (clear, zoom, pan, mode)",
+    "category": "chalkboard",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["clear", "zoom", "pan", "mode"]
+        },
+        "value": { "type": ["string", "number", "object"] },
+        "thought": { "type": "string" }
+      },
+      "required": ["action"]
+    }
+  },
+  {
+    "name": "read_file",
+    "description": "Read the contents of a file",
+    "category": "files",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Absolute path to the file" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "write_file",
+    "description": "Write content to a file (overwrites existing)",
+    "category": "files",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Absolute path to the file"
+        },
+        "content": { "type": "string", "description": "Content to write" }
+      },
+      "required": ["path", "content"]
+    }
+  },
+  {
+    "name": "create_file",
+    "description": "Create a new file",
+    "category": "files",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Absolute path for new file"
+        },
+        "content": {
+          "type": "string",
+          "description": "Initial content (optional)"
+        }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "list_directory",
+    "description": "List contents of a directory",
+    "category": "files",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "Directory path" },
+        "pattern": {
+          "type": "string",
+          "description": "Filter pattern like *.txt"
+        }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "search_files",
+    "description": "Search for files matching a pattern",
+    "category": "files",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "directory": { "type": "string", "description": "Directory to search" },
+        "pattern": {
+          "type": "string",
+          "description": "Pattern like *.py or report*.docx"
+        }
+      },
+      "required": ["directory", "pattern"]
+    }
+  },
+  {
+    "name": "delete_file",
+    "description": "Delete a file",
+    "category": "files",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string", "description": "File to delete" }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "run_command",
+    "description": "Execute a shell command",
+    "category": "system",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string", "description": "Command to execute" },
+        "timeout": { "type": "integer", "description": "Timeout in seconds" }
+      },
+      "required": ["command"]
+    }
+  },
+  {
+    "name": "run_powershell",
+    "description": "Execute a PowerShell script",
+    "category": "system",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "type": "string",
+          "description": "PowerShell script to run"
+        }
+      },
+      "required": ["script"]
+    }
+  },
+  {
+    "name": "start_program",
+    "description": "Start a program or application",
+    "category": "system",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Program path or name (e.g., notepad.exe)"
+        },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Arguments"
+        },
+        "wait": {
+          "type": "boolean",
+          "description": "Wait for program to finish"
+        }
+      },
+      "required": ["path"]
+    }
+  },
+  {
+    "name": "open_file_with_app",
+    "description": "Open a file with its default application",
+    "category": "system",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "file_path": { "type": "string", "description": "File to open" }
+      },
+      "required": ["file_path"]
+    }
+  },
+  {
+    "name": "copy_to_clipboard",
+    "description": "Copy text to the clipboard",
+    "category": "system",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "Text to copy" }
+      },
+      "required": ["text"]
+    }
+  },
+  {
+    "name": "paste_from_clipboard",
+    "description": "Get text from the clipboard",
+    "category": "system",
+    "parameters": { "type": "object", "properties": {} }
+  },
+  {
+    "name": "get_system_stats",
+    "description": "Get CPU, memory, and disk usage statistics",
+    "category": "system",
+    "parameters": { "type": "object", "properties": {} }
+  },
+  {
+    "name": "list_processes",
+    "description": "List running processes",
+    "category": "system",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name_filter": {
+          "type": "string",
+          "description": "Filter by process name"
+        }
+      }
+    }
+  },
+  {
+    "name": "kill_process",
+    "description": "Kill a running process",
+    "category": "system",
+    "requires_approval": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "pid": { "type": "integer", "description": "Process ID to kill" },
+        "name": { "type": "string", "description": "Process name to kill" }
+      }
+    }
+  },
+  {
+    "name": "show_notification",
+    "description": "Show a system notification",
+    "category": "system",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Notification title" },
+        "message": { "type": "string", "description": "Notification message" }
+      },
+      "required": ["title", "message"]
+    }
+  },
+  {
+    "name": "get_datetime",
+    "description": "Get the current date and time",
+    "category": "system",
+    "parameters": { "type": "object", "properties": {} }
+  },
+  {
+    "name": "wait",
+    "description": "Wait/pause for a specified number of seconds",
+    "category": "utility",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "seconds": { "type": "number", "description": "Seconds to wait" }
+      },
+      "required": ["seconds"]
+    }
+  },
+  {
+    "name": "generate_image",
+    "description": "Create AI-generated images from a text prompt (Stable Diffusion)",
+    "category": "media",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "prompt": { "type": "string", "description": "Primary text prompt" },
+        "negative_prompt": {
+          "type": "string",
+          "description": "Things to avoid"
+        },
+        "width": {
+          "type": "integer",
+          "description": "Image width (default 1024)"
+        },
+        "height": {
+          "type": "integer",
+          "description": "Image height (default 1024)"
+        },
+        "steps": {
+          "type": "integer",
+          "description": "Inference steps (default 25)"
+        },
+        "guidance": {
+          "type": "number",
+          "description": "Classifier-free guidance scale (default 7.5)"
+        },
+        "num_images": {
+          "type": "integer",
+          "description": "Number of images to generate"
+        },
+        "output_dir": {
+          "type": "string",
+          "description": "Optional output directory"
+        }
+      },
+      "required": ["prompt"]
+    }
+  },
+  {
+    "name": "create_video_from_images",
+    "description": "Stitch multiple image paths into a Facebook-ready MP4 (default 1080x1080)",
+    "category": "media",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "image_paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered list of image file paths"
+        },
+        "output_path": {
+          "type": "string",
+          "description": "Where to store the MP4"
+        },
+        "fps": {
+          "type": "integer",
+          "description": "Frames per second (default 24)"
+        },
+        "resolution": {
+          "type": "string",
+          "description": "Resolution like 1080x1080"
+        }
+      },
+      "required": ["image_paths"]
+    }
+  },
+  {
+    "name": "create_video_from_prompt",
+    "description": "Generate a short AI video directly from a text prompt by creating frames",
+    "category": "media",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "prompt": { "type": "string", "description": "Video concept or story" },
+        "frames": {
+          "type": "integer",
+          "description": "How many AI frames to create (default 12)"
+        },
+        "fps": {
+          "type": "integer",
+          "description": "Frames per second (default 24)"
+        },
+        "resolution": {
+          "type": "string",
+          "description": "Resolution like 1080x1080"
+        },
+        "steps": {
+          "type": "integer",
+          "description": "Inference steps for each frame"
+        },
+        "guidance": {
+          "type": "number",
+          "description": "Guidance scale for each frame"
+        },
+        "output_path": {
+          "type": "string",
+          "description": "Where to store the MP4"
+        }
+      },
+      "required": ["prompt"]
+    }
+  },
+  {
+    "name": "animate_image",
+    "description": "Create a Ken Burns style animation from a still image (MP4, Facebook resolution)",
+    "category": "media",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "image_path": { "type": "string", "description": "Source image path" },
+        "duration": {
+          "type": "integer",
+          "description": "Video duration in seconds (default 6)"
+        },
+        "fps": {
+          "type": "integer",
+          "description": "Frames per second (default 30)"
+        },
+        "zoom_factor": {
+          "type": "number",
+          "description": "Zoom factor for Ken Burns effect (default 1.05)"
+        },
+        "resolution": {
+          "type": "string",
+          "description": "Resolution like 1080x1080"
+        },
+        "output_path": {
+          "type": "string",
+          "description": "Where to store the MP4"
+        }
+      },
+      "required": ["image_path"]
+    }
+  },
+  {
+    "name": "agent_get_itineraries",
+    "description": "Get all saved travel itineraries and extracted appointments.",
+    "category": "itinerary",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "agent_get_itinerary_timeline",
+    "description": "Generate a plain-English, smart-sorted timeline across all saved itineraries.",
+    "category": "itinerary",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "from_date": {
+          "type": "string",
+          "description": "Optional start date filter (YYYY-MM-DD or ISO)"
+        },
+        "to_date": {
+          "type": "string",
+          "description": "Optional end date filter (YYYY-MM-DD or ISO)"
+        }
+      }
+    }
+  },
+  {
+    "name": "control_racesight",
+    "description": "Control the RaceSight horse racing dashboard in the GUI. Can open/close the console or trigger a live race analysis for a track and race number.",
+    "category": "gui",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["open", "close", "analyze"],
+          "description": "The action to perform on the RaceSight GUI"
+        },
+        "track": {
+          "type": "string",
+          "description": "Track name for analysis (e.g. 'Randwick')"
+        },
+        "race_number": {
+          "type": "integer",
+          "description": "Race number to analyze"
+        }
+      },
+      "required": ["action"]
+    }
+  },
+  {
+    "name": "set_racesight_insight",
+    "description": "Push a professional expert betting insight or strategy directly to the RaceSight Console GUI. This appears as a priority 'Amigos Agent Insight' block for the user.",
+    "category": "horse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "The main insight message to display (e.g. 'Horse #3 looks overvalued due to track bias.')"
+        },
+        "strategy": {
+          "type": "string",
+          "description": "Specific betting strategy (e.g. 'Each-way bet' or 'Exotic Trifecta 1,2/1,2,5')"
+        },
+        "auto_open": {
+          "type": "boolean",
+          "description": "Whether to automatically open the RaceSight console if closed",
+          "default": true
+        }
+      },
+      "required": ["message"]
+    }
+  },
+  {
+    "name": "analyze_horse_race",
+    "description": "Analyze horse racing data for insights. Automatically opens RaceSight GUI. (requires approval)",
+    "category": "horse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "track": {
+          "type": "string",
+          "description": "Track name (e.g. 'Randwick')"
+        },
+        "race_number": { "type": "integer", "description": "Race number" }
+      },
+      "required": ["track", "race_number"]
+    }
+  },
+  {
+    "name": "horse_get_next_to_jump",
+    "description": "Get the next horse races scheduled to start soon across all tracks",
+    "category": "horse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "race_types": {
+          "type": "string",
+          "description": "Comma-separated types (horse, greyhound, harness)",
+          "default": "horse,greyhound,harness"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Max results",
+          "default": 15
+        }
+      }
+    }
+  },
+  {
+    "name": "horse_get_track_schedule",
+    "description": "Get the full race schedule for a specific track",
+    "category": "horse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "track": {
+          "type": "string",
+          "description": "Track name (optional, defaults to Global)"
+        }
+      }
+    }
+  },
+  {
+    "name": "horse_get_runners",
+    "description": "Get detailed information about runners in a specific race",
+    "category": "horse",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "race_id": {
+          "type": "string",
+          "description": "The unique race ID or track/race identifier"
+        }
+      },
+      "required": ["race_id"]
+    }
+  }
+]

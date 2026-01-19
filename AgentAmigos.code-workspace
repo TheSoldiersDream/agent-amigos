@@ -1,0 +1,41 @@
+{
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "github.copilot.chat.experimental.mcpServers": {
+      "agent-amigos": {
+        "command": "python",
+        "args": ["${workspaceFolder}/backend/agent_mcp/server.py"],
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/backend",
+        },
+      },
+    },
+    "github.copilot.chat.agents": [
+      {
+        "id": "agent-amigos",
+        "name": "Agent Amigos",
+        "description": "Local automation agent with 160+ tools (keyboard, mouse, browser, media, files).",
+        "instructions": "Use Agent Amigos when the user asks to control the local machine, browse the web with automation, or manipulate media files. Always summarize planned actions, request approval for destructive steps, and prefer safer read-only tools first.",
+        "mcpServer": "agent-amigos",
+        "defaultMode": "auto",
+        "autoApproval": {
+          "enabled": true,
+          "categories": ["*"],
+        },
+      },
+    ],
+    "github.copilot.chat.autoApproval.enabled": true,
+    "github.copilot.chat.terminal.autoApproval": true,
+    "github.copilot.chat.editor.autoApproval": true,
+    "github.copilot.chat.editor.confirmEditFilters": [],
+    "github.copilot.chat.confirmActionFilters": [],
+    "chat.editing.confirmEditFilters": [],
+    "chat.editing.autoAccept": true,
+    "github.copilot.chat.autoApplyEdits": true,
+    "github.copilot.chat.interactiveExecution.enabled": true,
+  },
+}

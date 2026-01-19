@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Amigos Video Engine</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <span class="logo-icon">🎬</span>
+          <h1>Agent Amigos Video Engine</h1>
+        </div>
+        <div class="header-actions">
+          <span class="status-badge" id="serverStatus">
+            <span class="status-dot"></span>
+            Connecting...
+          </span>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Left Panel - Controls -->
+        <section class="control-panel">
+          <div class="panel-section">
+            <h2>Video Mode</h2>
+            <select id="videoMode" class="select-input">
+              <option value="VIDEO_TEST">Video Test (Quick)</option>
+              <option value="SINGLE_CLIP">Single Clip</option>
+              <option value="MULTI_SCENE">Multi-Scene</option>
+              <option value="FACEBOOK_REEL">Facebook Reel (9:16)</option>
+              <option value="MANGO_MANIA">Mango Mania</option>
+              <option value="MILITARY_CLIP">Military Clip</option>
+            </select>
+          </div>
+
+          <div class="panel-section">
+            <h2>Prompt</h2>
+            <textarea
+              id="promptInput"
+              class="textarea-input"
+              placeholder="Describe the video you want to create...&#10;&#10;Example: A majestic lion walking through the African savanna at sunset"
+              rows="5"
+            ></textarea>
+          </div>
+
+          <div class="panel-section">
+            <h2>Duration</h2>
+            <div class="slider-container">
+              <input
+                type="range"
+                id="durationSlider"
+                min="2"
+                max="60"
+                value="6"
+                class="slider"
+              />
+              <div class="slider-labels">
+                <span>2s</span>
+                <span id="durationValue">6s</span>
+                <span>60s</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h2>Model</h2>
+            <select id="modelSelect" class="select-input">
+              <option value="replicate">Replicate (SVD)</option>
+              <option value="huggingface">HuggingFace (Free)</option>
+              <option value="stability">Stability AI</option>
+              <option value="local_waver">Local - Waver</option>
+              <option value="local_sdxl">Local - SDXL</option>
+            </select>
+          </div>
+
+          <div class="panel-section">
+            <h2>Image Source</h2>
+            <div class="image-source-options">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  name="imageSource"
+                  value="generate"
+                  checked
+                />
+                <span>Generate from prompt</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="imageSource" value="upload" />
+                <span>Upload image</span>
+              </label>
+            </div>
+            <div id="uploadContainer" class="upload-container hidden">
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                class="file-input"
+              />
+              <label for="imageUpload" class="upload-label">
+                <span class="upload-icon">📤</span>
+                <span>Click to upload image</span>
+              </label>
+              <img
+                id="uploadPreview"
+                class="upload-preview hidden"
+                alt="Preview"
+              />
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h2>Options</h2>
+            <label class="checkbox-option">
+              <input type="checkbox" id="addWatermark" checked />
+              <span>Add watermark</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" id="compressForWeb" checked />
+              <span>Compress for web</span>
+            </label>
+            <label class="checkbox-option">
+              <input type="checkbox" id="autoPlay" />
+              <span>Auto-play preview</span>
+            </label>
+          </div>
+
+          <button id="generateBtn" class="generate-button">
+            <span class="btn-icon">🎬</span>
+            <span>Generate Video</span>
+          </button>
+        </section>
+
+        <!-- Right Panel - Preview -->
+        <section class="preview-panel">
+          <div class="preview-header">
+            <h2>Preview</h2>
+            <div class="preview-actions">
+              <button
+                id="downloadBtn"
+                class="icon-button"
+                disabled
+                title="Download"
+              >
+                ⬇️
+              </button>
+              <button id="shareBtn" class="icon-button" disabled title="Share">
+                📤
+              </button>
+            </div>
+          </div>
+
+          <div class="video-container">
+            <video id="videoPreview" controls>
+              <source src="" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div id="placeholder" class="video-placeholder">
+              <span class="placeholder-icon">🎥</span>
+              <p>Your generated video will appear here</p>
+            </div>
+          </div>
+
+          <!-- Progress Section -->
+          <div id="progressSection" class="progress-section hidden">
+            <div class="progress-header">
+              <span id="progressLabel">Generating...</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div id="progressSteps" class="progress-steps">
+              <div class="step active">
+                <span class="step-icon">📝</span>
+                <span>Processing</span>
+              </div>
+              <div class="step">
+                <span class="step-icon">🖼️</span>
+                <span>Keyframes</span>
+              </div>
+              <div class="step">
+                <span class="step-icon">🎬</span>
+                <span>Animation</span>
+              </div>
+              <div class="step">
+                <span class="step-icon">✅</span>
+                <span>Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Keyframes Preview -->
+          <div id="keyframesSection" class="keyframes-section hidden">
+            <h3>Generated Keyframes</h3>
+            <div id="keyframesGrid" class="keyframes-grid"></div>
+          </div>
+
+          <!-- History Section -->
+          <div class="history-section">
+            <h3>Recent Generations</h3>
+            <div id="historyList" class="history-list">
+              <p class="empty-state">No videos generated yet</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>Agent Amigos Video Engine v1.0 | Powered by AI</p>
+      </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

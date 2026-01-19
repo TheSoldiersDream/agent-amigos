@@ -1,0 +1,10 @@
+platform: facebook
+mode: assisted_autopilot
+daily_limits:
+  comments: 5
+  follows: 3
+  posts: 1
+
+human_pause_seconds:
+  min: 120
+  max: 600
