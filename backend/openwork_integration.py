@@ -21,10 +21,11 @@ from .workflows.revenue_generation import RevenueWorkflows
 
 class OpenWorkSession:
     """Represents an OpenWork session"""
-    def __init__(self, session_id: str, workspace_path: str, prompt: str):
+    def __init__(self, session_id: str, workspace_path: str, prompt: str, model: Optional[str] = None):
         self.session_id = session_id
         self.workspace_path = workspace_path
         self.prompt = prompt
+        self.model = model
         self.created_at = datetime.now()
         self.status = "active"
         self.todos: List[Dict[str, Any]] = []
@@ -136,6 +137,7 @@ class OpenWorkManager:
                     "session_id": session.session_id,
                     "workspace_path": session.workspace_path,
                     "prompt": session.prompt,
+                    "model": session.model,
                     "created_at": session.created_at.isoformat(),
                     "status": session.status,
                     "todos": session.todos,
@@ -160,6 +162,7 @@ class OpenWorkManager:
                     session_id=session_data.get("session_id", session_id),
                     workspace_path=session_data.get("workspace_path", ""),
                     prompt=session_data.get("prompt", ""),
+                    model=session_data.get("model")
                 )
                 # Restore created_at from saved data
                 created_str = session_data.get("created_at")
@@ -322,42 +325,6 @@ class OpenWorkManager:
             f"Task: {todo.get('title') or todo.get('description')}\n"
             "Output drafted and ready for review."
         )
-
-    def run_automated_standup(self):
-        """AI departmental standup identifying what shipped and what is blocked."""
-        participants = ["CEO Agent", "CTO Agent", "Ops Manager", "Marketing Lead"]
-        
-        discussion = [
-            "CEO: Quick standup guys. We are transforming into a revenue company.",
-            "CTO: Infrastructure is ready for 128 tools logic.",
-            "Ops: We are tracking all tasks in openwork_sessions.json now.",
-            "Marketing:Social funnels are being prioritized."
-        ]
-        
-        action_items = [
-            {"owner": "cto", "task": "Verify tool limit enforcement in server.py"},
-            {"owner": "marketing", "task": "Launch viral hook test #1"}
-        ]
-        
-        return self.record_meeting("Daily AI Standup", participants, ["Shipment review", "Blocker removal"], discussion, action_items)
-
-    def run_automated_executive_meeting(self):
-        """Autonomous executive meeting making strategic pivots or revenue decisions."""
-        participants = ["CEO Agent", "CTO Agent", "Finance Agent", "Sales Agent"]
-        
-        discussion = [
-            "CEO: We are operating as a revenue-first company now.",
-            "Finance: I'm tracking ARR projections based on viral reach.",
-            "Sales: Closing the loop on 'Automation-as-a-Service' offers.",
-            "CTO: Engineering is 100% autonomous."
-        ]
-        
-        action_items = [
-            {"owner": "sales", "task": "Refine pricing structures in demo artifacts."},
-            {"owner": "finance", "task": "Prepare the first automated P&L report."}
-        ]
-        
-        return self.record_meeting("AI Executive Strategic Review", participants, ["Revenue Strategy", "Scaling Decisions"], discussion, action_items)
 
     def execute_todo(self, session_id: str, todo_id: str, executed_by: str = "amigos") -> Dict[str, Any]:
         """Execute a todo and write a proof artifact to disk."""
@@ -1009,19 +976,31 @@ class OpenWorkManager:
             return sock.getsockname()[1]
 
     def _resolve_opencode_path(self) -> Optional[str]:
+        # Priority 1: Check PATH
         opencode_path = shutil.which("opencode")
         if opencode_path:
             return opencode_path
 
+        # Priority 2: Windows-specific common locations
         if os.name == "nt":
             appdata = os.environ.get("APPDATA")
             if appdata:
-                npm_cmd = Path(appdata) / "npm" / "opencode.cmd"
-                if npm_cmd.exists():
-                    return str(npm_cmd)
-                npm_exe = Path(appdata) / "npm" / "opencode.exe"
-                if npm_exe.exists():
-                    return str(npm_exe)
+                # Common npm global install locations
+                npm_paths = [
+                    Path(appdata) / "npm" / "opencode.cmd",
+                    Path(appdata) / "npm" / "opencode.ps1",
+                    Path(appdata) / "npm" / "opencode.exe",
+                ]
+                for p in npm_paths:
+                    if p.exists():
+                        return str(p)
+            
+            # Check program files if applicable
+            pf = os.environ.get("ProgramFiles")
+            if pf:
+                npm_path = Path(pf) / "nodejs" / "opencode.cmd"
+                if npm_path.exists():
+                    return str(npm_path)
 
         return None
         
@@ -1044,21 +1023,30 @@ class OpenWorkManager:
             if not opencode_path:
                 return {
                     "success": False,
-                    "error": "OpenCode CLI not found on PATH. Install from: https://github.com/anomalyco/opencode"
+                    "error": "OpenCode CLI not found on PATH. Install via: npm install -g @anomalyco/opencode"
                 }
 
             # Check if opencode is available
-            result = subprocess.run(
-                [opencode_path, "--version"],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
+            # Note: on Windows, .cmd/.ps1 might need shell=True
+            check_cmd = [opencode_path, "--version"]
+            try:
+                result = subprocess.run(
+                    check_cmd,
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    shell=(os.name == "nt")
+                )
+            except Exception as e:
+                return {
+                    "success": False,
+                    "error": f"Failed to run opencode --version: {e}"
+                }
             
             if result.returncode != 0:
                 return {
                     "success": False,
-                    "error": "OpenCode CLI not found on PATH. Install from: https://github.com/anomalyco/opencode"
+                    "error": f"OpenCode found at {opencode_path} but failed to run. Error: {result.stderr}"
                 }
             
             # Start opencode server
@@ -1074,7 +1062,8 @@ class OpenWorkManager:
                 cwd=workspace_path,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                shell=(os.name == "nt")
             )
             
             # Wait a moment for server to start
@@ -1090,7 +1079,7 @@ class OpenWorkManager:
         except FileNotFoundError:
             return {
                 "success": False,
-                "error": "OpenCode CLI not found on PATH. Install from: https://github.com/anomalyco/opencode"
+                "error": "OpenCode executable not found."
             }
         except Exception as e:
             logger.error(f"Failed to start OpenCode server: {e}")
@@ -1109,7 +1098,7 @@ class OpenWorkManager:
                 self.opencode_process.kill()
             self.opencode_process = None
     
-    def create_session(self, workspace_path: str, prompt: str) -> Dict[str, Any]:
+    def create_session(self, workspace_path: str, prompt: str, model: Optional[str] = None) -> Dict[str, Any]:
         """Create a new OpenWork session"""
         import uuid
         session_id = str(uuid.uuid4())
@@ -1117,7 +1106,8 @@ class OpenWorkManager:
         session = OpenWorkSession(
             session_id=session_id,
             workspace_path=workspace_path,
-            prompt=prompt
+            prompt=prompt,
+            model=model
         )
         
         self.sessions[session_id] = session
@@ -1127,6 +1117,7 @@ class OpenWorkManager:
             "session_id": session_id,
             "workspace_path": workspace_path,
             "prompt": prompt,
+            "model": model,
             "created_at": session.created_at.isoformat(),
             "status": session.status
         }
@@ -1141,6 +1132,7 @@ class OpenWorkManager:
             "session_id": session.session_id,
             "workspace_path": session.workspace_path,
             "prompt": session.prompt,
+            "model": session.model,
             "created_at": session.created_at.isoformat(),
             "status": session.status,
             "todos": session.todos,
@@ -1333,48 +1325,6 @@ class OpenWorkManager:
         
         return skills
     
-    def create_company_checkin_session(self, workspace_path: Optional[str] = None, focus: Optional[str] = None) -> Dict[str, Any]:
-        """Creates the initial corporate check-in session if it doesn't exist."""
-        import datetime as dt
-        session_id = f"corporate-checkin-{dt.date.today().isoformat()}"
-        
-        # PERSISTENCE FIX: Check if we already have an active session for today
-        if session_id in self.sessions:
-            print(f"Resuming existing corporate session: {session_id}")
-            return {
-                "session_id": session_id,
-                "status": self.sessions[session_id].status,
-                "todo_count": len(self.sessions[session_id].todos)
-            }
-
-        # RUN THE FIRST MEETING (Automated Standup)
-        # This creates the first governance artifact immediately
-        first_meeting = self.run_automated_standup()
-        print(f"Initial corporate meeting recorded: {first_meeting['id']}")
-
-        session = OpenWorkSession(
-            session_id=session_id,
-            workspace_path=self.base_workspace_path,
-            prompt=f"Corporate Governance & Revenue Drive: {dt.date.today().isoformat()}"
-        )
-        
-        # Mandatory Corporate Priorities
-        session.todos = [
-            {"id": "corp1", "title": "Review AI Governance Logs", "status": "completed", "description": "Verify initial standup and executive logs."},
-            {"id": "corp2", "title": "Execute Revenue Funnel #1", "status": "in-progress", "description": "Ship the first landing page for automated services."},
-            {"id": "corp3", "title": "Verify Thirteen Role Registry", "status": "not-started", "description": "Ensure CEO, CTO, Sales etc are mapping correctly."},
-            {"id": "corp4", "title": "P&L Analysis", "status": "not-started", "description": "Finance agent to calculate projected ARR from current tasks."}
-        ]
-        
-        self.sessions[session_id] = session
-        self._save_sessions()
-        
-        return {
-            "session_id": session_id,
-            "status": session.status,
-            "todo_count": len(session.todos)
-        }
-
     def close_session(self, session_id: str) -> bool:
         """Close a session"""
         session = self.sessions.get(session_id)

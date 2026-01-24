@@ -1226,3 +1226,6 @@ body {
 .thinking-dots span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+.spin-animation { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

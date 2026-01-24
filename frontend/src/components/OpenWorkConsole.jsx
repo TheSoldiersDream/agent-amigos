@@ -26,6 +26,8 @@ const OpenWorkConsole = ({ apiUrl }) => {
   const [kpiStatus, setKpiStatus] = useState(null);
   const [companyReport, setCompanyReport] = useState(null);
   const [taskArtifacts, setTaskArtifacts] = useState([]);
+  const [availableModels, setAvailableModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState("glm-4-9b-fast");
   const [artifactViewer, setArtifactViewer] = useState({
     open: false,
     path: "",
@@ -46,6 +48,7 @@ const OpenWorkConsole = ({ apiUrl }) => {
     loadKpiStatus();
     loadCompanyReport();
     loadTaskArtifacts();
+    loadModels();
 
     // Poll for updates every 5 seconds
     const interval = setInterval(() => {
@@ -102,6 +105,17 @@ const OpenWorkConsole = ({ apiUrl }) => {
       }
     } catch (err) {
       console.error("Failed to load task artifacts:", err);
+    }
+  };
+
+  const loadModels = async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE}/agent/models/config`);
+      if (data && data.available_models) {
+        setAvailableModels(Object.values(data.available_models));
+      }
+    } catch (err) {
+      console.error("Failed to load models:", err);
     }
   };
 
@@ -274,6 +288,7 @@ const OpenWorkConsole = ({ apiUrl }) => {
       const { data } = await axios.post(`${API_BASE}/openwork/sessions`, {
         workspace_path: selectedWorkspace,
         prompt: newSessionPrompt,
+        model: selectedModel,
       });
 
       setNewSessionPrompt("");
@@ -657,6 +672,32 @@ const OpenWorkConsole = ({ apiUrl }) => {
                 {workspaces.map((ws) => (
                   <option key={ws.path} value={ws.path}>
                     {ws.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* AI Model Selector */}
+            <div style={{ width: "200px" }}>
+              <div style={{ fontSize: "11px", color: "#888", marginBottom: "4px" }}>
+                AI Model Manager
+              </div>
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "4px 8px",
+                  backgroundColor: "#2a2a3e",
+                  color: "#fff",
+                  border: "1px solid #3a3a4e",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                }}
+              >
+                {availableModels.filter(m => m.provider === "zai" || m.model_id === "gpt-4o").map((m) => (
+                  <option key={m.model_id} value={m.model_id}>
+                    {m.name || m.model_id}
                   </option>
                 ))}
               </select>

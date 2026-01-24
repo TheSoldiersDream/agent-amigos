@@ -12,6 +12,7 @@ import {
   FiShoppingCart,
   FiHome,
   FiMapPin,
+  FiRefreshCw,
 } from "react-icons/fi";
 
 const InternetConsole = ({
@@ -386,6 +387,37 @@ const InternetConsole = ({
     }
   };
 
+  const handleRefresh = useCallback(() => {
+    if (loading) return;
+    
+    // Explicitly clear results to show loading state
+    setResults([]);
+    
+    let refreshQuery = query;
+    
+    if (!refreshQuery) {
+      if (searchType === "news") {
+        const newsQueries = [
+          "latest world news", 
+          "top breaking stories today", 
+          "major global events",
+          "world news headlines",
+          "ABC News latest",
+          "BBC News world"
+        ];
+        refreshQuery = newsQueries[Math.floor(Math.random() * newsQueries.length)];
+      } else if (searchType === "finance") {
+        refreshQuery = "latest finance market news";
+      } else if (searchType === "tech") {
+        refreshQuery = "latest technology news";
+      } else {
+        refreshQuery = "latest " + searchType;
+      }
+    }
+    
+    handleSearch(refreshQuery);
+  }, [loading, query, searchType, handleSearch]);
+
   if (!isOpen) return null;
 
   return (
@@ -490,6 +522,71 @@ const InternetConsole = ({
         </button>
       </div>
 
+      {/* Control Bar (Search & Refresh) */}
+      <div style={{ 
+        padding: "10px 16px", 
+        borderBottom: "var(--glass-border)",
+        display: "flex",
+        gap: "10px",
+        alignItems: "center",
+        background: "rgba(0,0,0,0.2)"
+      }}>
+        <div style={{ position: "relative", flex: 1 }}>
+          <FiSearch 
+            size={14} 
+            style={{ 
+              position: "absolute", 
+              left: "12px", 
+              top: "50%", 
+              transform: "translateY(-50%)",
+              color: "var(--text-muted)"
+            }} 
+          />
+          <input
+            type="text"
+            placeholder={`Search ${searchType}...`}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            style={{
+              width: "100%",
+              padding: "10px 12px 10px 36px",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "10px",
+              color: "white",
+              fontSize: "0.85rem",
+              outline: "none",
+            }}
+          />
+        </div>
+        <button
+          onClick={() => handleRefresh()}
+          disabled={loading}
+          title="Refresh Content"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            padding: "10px",
+            borderRadius: "10px",
+            color: "var(--text-secondary)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.2s"
+          }}
+          onMouseEnter={(e) => {
+            if(!loading) e.currentTarget.style.background = "rgba(59, 130, 246, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+          }}
+        >
+          <FiRefreshCw size={14} className={loading ? "spin-animation" : ""} />
+        </button>
+      </div>
+
       {/* Content */}
       <div style={{ padding: "16px", overflowY: "auto", flex: 1 }}>
         {/* Search Type Toggle */}
@@ -588,6 +685,59 @@ const InternetConsole = ({
             </button>
           ))}
         </div>
+
+        {/* Quick Topics Intel */}
+        <div style={{ marginBottom: "20px" }}>
+          <div style={{ 
+            fontSize: "0.7rem", 
+            fontWeight: "700", 
+            textTransform: "uppercase", 
+            color: "var(--text-muted)",
+            marginBottom: "10px",
+            letterSpacing: "0.05em",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}>
+            <FiActivity size={10} /> Quick Intel Topics
+          </div>
+          <div style={{ 
+            display: "flex", 
+            flexWrap: "wrap", 
+            gap: "8px" 
+          }}>
+            {quickTopics.map((topic, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setQuery(topic.query);
+                  handleSearch(topic.query);
+                }}
+                style={{
+                  padding: "6px 10px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: "8px",
+                  fontSize: "0.7rem",
+                  color: "var(--text-secondary)",
+                  cursor: "pointer",
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.color = "var(--text-secondary)";
+                }}
+              >
+                {topic.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {results.length > 0 && !loading && (
             <button
