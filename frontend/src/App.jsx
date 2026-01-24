@@ -28,6 +28,10 @@ import CompanyConsole from "./components/CompanyConsole.jsx";
 import OpenWorkConsole from "./components/OpenWorkConsole.jsx";
 import LandingPage from "./website/LandingPage.jsx";
 import PortalHeader from "./website/PortalHeader.jsx";
+import {
+  isSpeechRecognitionSupported,
+  startListening as baseStartListening,
+} from "./utils/stt.js";
 
 function executeToolWithAutonomy(autoMode, toolName, params) {
   if (autoMode) {
@@ -11556,9 +11560,6 @@ function AutonomyControls({
 }
 
 function App() {
-  const [apiUrl, setApiUrl] = useState(deriveDefaultApiUrl);
-  const [showDashboard, setShowDashboard] = useState(false);
-
   // ═══════════════════════════════════════════════════════════════
   // DETACHED WINDOW SYSTEM
   // ═══════════════════════════════════════════════════════════════
@@ -11946,6 +11947,7 @@ function App() {
     });
   }, [amigosSkill]);
   const [status, setStatus] = useState("Ready");
+  const [showDashboard, setShowDashboard] = useState(true); // Start with dashboard visible
   const [isListening, setIsListening] = useState(false);
   const [voiceLang, setVoiceLang] = useState("en-US");
   const [pendingAction, setPendingAction] = useState(null);
@@ -12266,6 +12268,7 @@ function App() {
   // ═══════════════════════════════════════════════════════════════
   const [backendConnected, setBackendConnected] = useState(false);
   const [backendDiscovering, setBackendDiscovering] = useState(false);
+  const [apiUrl, setApiUrl] = useState(deriveDefaultApiUrl);
 
   // Auto-discover backend on mount and periodically
   useEffect(() => {
@@ -13125,6 +13128,9 @@ function App() {
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const fileInputRef = useRef(null);
 
+  // 🎤 VOICE INPUT
+  const [recognitionInstance, setRecognitionInstance] = useState(null);
+
   // 🔊 VOICE OUTPUT
   // Voice is intentionally conservative:
   // - OFF: never speak
@@ -13751,83 +13757,71 @@ function App() {
     ]);
   };
 
-  // --- Voice Input (Speech-to-Text) ---
-  const startListening = () => {
-    // Stop any ongoing speech immediately when user wants to talk
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    setAiSpeaking(false);
-
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setMessages((prev) => [
-        ...prev,
-        { role: "system", content: "Speech recognition not available." },
-      ]);
+  // --- Voice Input (STT) ---
+  const toggleVoiceInput = useCallback(() => {
+    if (isListening && recognitionInstance) {
+      try {
+        recognitionInstance.stop();
+      } catch (e) {
+        /* ignore */
+      }
+      setIsListening(false);
+      setRecognitionInstance(null);
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.lang = voiceLang;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      setStatus("🎤 Listening...");
-    };
-
-    recognition.onresult = (event) => {
-      let interimTranscript = "";
-      let finalTranscript = "";
-
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
-        }
-      }
-
-      if (finalTranscript) {
-        setInput(finalTranscript);
-        lastInputWasVoiceRef.current = true;
-        setTimeout(() => sendMessage(finalTranscript), 100);
-      } else if (interimTranscript) {
-        setInput(interimTranscript);
-        setStatus(`🎤 Hearing: "${interimTranscript}..."`);
-      }
-    };
-
-    recognition.onerror = (event) => {
-      if (event.error === "network") {
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "system",
-            content:
-              "Voice requires internet. Try typing or use Chrome browser.",
-          },
-        ]);
-      }
-      setStatus("Ready");
-      setIsListening(false);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      setStatus("Ready");
-    };
-
-    try {
-      recognition.start();
-    } catch (err) {
-      console.error("Speech recognition start error:", err);
-      setIsListening(false);
+    if (!isSpeechRecognitionSupported()) {
+      alert("Speech recognition not supported in this browser.");
+      return;
     }
-  };
+
+    // Barge-in: stop any AI speaking
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setAiSpeaking(false);
+
+    const rec = baseStartListening({
+      onStart: () => {
+        setIsListening(true);
+        setStatus("🎤 Listening...");
+      },
+      onEnd: () => {
+        setIsListening(false);
+        setRecognitionInstance(null);
+        setStatus("Ready");
+      },
+      onError: (err) => {
+        console.error("STT Error:", err);
+        setIsListening(false);
+        setRecognitionInstance(null);
+        setStatus("Ready");
+      },
+      onResult: (fullText, finalText) => {
+        setInput(fullText);
+        if (finalText && !isProcessing) {
+          lastInputWasVoiceRef.current = true;
+          setStatus("🎤 Captured.");
+          setTimeout(() => {
+            setIsListening(false);
+            setRecognitionInstance(null);
+            // Call sendMessage directly - it's defined below
+            sendMessage(finalText);
+          }, 600);
+        }
+      },
+      lang: voiceLang,
+    });
+    setRecognitionInstance(rec);
+  }, [
+    isListening,
+    recognitionInstance,
+    isProcessing,
+    voiceLang,
+    setIsListening,
+    setRecognitionInstance,
+    setInput,
+    setStatus,
+    setAiSpeaking,
+  ]);
 
   // --- Approve Pending Action ---
   const approveAction = async () => {
@@ -15842,14 +15836,22 @@ function App() {
                         grok: "𝕏",
                         ollama: "🦙",
                         deepseek: "🔮",
+                        zai: "⚡",
+                        openrouter: "🔄",
+                        anthropic: "🔺",
+                        google: "🔵",
                       };
                       const providerNames = {
-                        github: "GitHub Copilot",
-                        openai: "OpenAI GPT",
-                        groq: "Groq (Fast)",
-                        grok: "Grok (xAI)",
-                        ollama: "Ollama (Local)",
-                        deepseek: "DeepSeek",
+                        github: "GitHub Models (gpt-4o, o1)",
+                        openai: "OpenAI (gpt-4o, o1, o3-mini)",
+                        groq: "Groq (llama-3.3-70b, qwen2.5)",
+                        grok: "Grok (grok-2, grok-vision)",
+                        ollama: "Ollama (qwen2.5:7b, llama3.2)",
+                        deepseek: "DeepSeek (deepseek-chat, r1)",
+                        zai: "Z.AI (glm-4.7-flash)",
+                        openrouter: "OpenRouter (llama-3.3-70b)",
+                        anthropic: "Anthropic (claude-3.5-sonnet)",
+                        google: "Google (gemini-2.0-flash)",
                       };
                       const isActive = provider.id === activeProvider;
                       const isConfigured = provider.configured;
@@ -17420,7 +17422,7 @@ function App() {
 
                   {/* Voice Button */}
                   <button
-                    onClick={startListening}
+                    onClick={toggleVoiceInput}
                     disabled={pendingAction !== null || isProcessing}
                     style={{
                       minWidth: "36px",
@@ -17588,6 +17590,36 @@ function App() {
                     }
                   >
                     {alwaysReadFull ? "📖" : "📑"}
+                  </button>
+
+                  {/* Microphone Button for Voice Input */}
+                  <button
+                    onClick={toggleVoiceInput}
+                    disabled={isProcessing}
+                    style={{
+                      minWidth: "36px",
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "10px",
+                      background: isListening
+                        ? "linear-gradient(135deg, #ef4444, #dc2626)"
+                        : "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      border: "none",
+                      color: "white",
+                      cursor: isProcessing ? "not-allowed" : "pointer",
+                      fontSize: "1.1em",
+                      boxShadow: isListening
+                        ? "0 0 20px rgba(239, 68, 68, 0.6)"
+                        : "0 2px 8px rgba(99, 102, 241, 0.3)",
+                      flexShrink: 0,
+                      animation: isListening
+                        ? "pulse 1.5s ease-in-out infinite"
+                        : "none",
+                      opacity: isProcessing ? 0.5 : 1,
+                    }}
+                    title={isListening ? "Stop recording" : "Click to speak"}
+                  >
+                    {isListening ? "⏹️" : "🎤"}
                   </button>
 
                   {/* Team Mode Toggle - Full Team Coordination */}
@@ -17790,6 +17822,38 @@ function App() {
               💬
             </button>
           )}
+
+          {/* Floating Chat Mic - Re-added for VS Code Integration focus */}
+          <button
+            onClick={toggleVoiceInput}
+            style={{
+              position: "fixed",
+              bottom: "100px",
+              right: "24px",
+              width: "56px",
+              height: "56px",
+              borderRadius: "50%",
+              background: isListening
+                ? "linear-gradient(135deg, #ef4444, #dc2626)"
+                : "linear-gradient(135deg, #6366f1, #8b5cf6)",
+              border: "none",
+              color: "white",
+              fontSize: "1.6em",
+              cursor: "pointer",
+              boxShadow: isListening
+                ? "0 0 20px rgba(239, 68, 68, 0.6)"
+                : "0 8px 30px rgba(99, 102, 241, 0.4)",
+              zIndex: 999,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+              transform: isListening ? "scale(1.1)" : "scale(1)",
+            }}
+            title={isListening ? "Stop Listening" : "Voice Control"}
+          >
+            {isListening ? "🛑" : "🎤"}
+          </button>
 
           {/* Global Agent Pulse Window */}
           {(() => {

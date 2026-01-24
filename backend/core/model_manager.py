@@ -388,6 +388,18 @@ class ModelManager:
             avg_latency_ms=200,
             success_rate=0.94
         ))
+
+        # ZhipuAI / BigModel (GLM)
+        self.register_model(ModelCapability(
+            name="zai GLM 4.7flash",
+            provider="zai",
+            model_id="glm-4.7-flash",
+            types=[ModelType.FAST, ModelType.GENERAL, ModelType.REASONING],
+            context_window=1000000,
+            supports_function_calling=True,
+            description="ZhipuAI GLM 4.7 Flash - High-speed reasoning model (2025)",
+            success_rate=0.98
+        ))
         
         # Google's Models
         self.register_model(ModelCapability(
@@ -635,6 +647,8 @@ class ModelManager:
                 result = await self._generate_groq(model, prompt, system, messages, temperature, max_tokens)
             elif model.provider == "openrouter":
                 result = await self._generate_openrouter(model, prompt, system, messages, temperature, max_tokens)
+            elif model.provider == "zai":
+                result = await self._generate_zai(model, prompt, system, messages, temperature, max_tokens)
             else:
                 result = {"success": False, "error": f"Provider {model.provider} not supported"}
             
@@ -797,6 +811,42 @@ class ModelManager:
             payload["max_tokens"] = max_tokens
             
         async with httpx.AsyncClient(timeout=60.0) as client:
+            resp = await client.post(url, headers=headers, json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+            
+            return {
+                "success": True,
+                "response": data["choices"][0]["message"]["content"],
+                "model": model.model_id,
+                "usage": data.get("usage", {})
+            }
+
+    async def _generate_zai(self, model, prompt, system, messages, temperature, max_tokens):
+        # Support both GLM_API_KEY (seen in .env) and ZAI_API_KEY (traditional)
+        api_key = os.getenv("GLM_API_KEY") or os.getenv("ZAI_API_KEY") or os.getenv("ZHIPU_API_KEY")
+        if not api_key:
+            return {"success": False, "error": "ZhipuAI API key not set (GLM_API_KEY or ZAI_API_KEY)"}
+            
+        base_url = os.getenv("GLM_API_BASE") or os.getenv("ZAI_API_BASE") or "https://api.z.ai/api/paas/v4"
+        url = f"{base_url.rstrip('/')}/chat/completions"
+        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+        
+        if not messages:
+            messages = []
+            if system:
+                messages.append({"role": "system", "content": system})
+            messages.append({"role": "user", "content": prompt})
+            
+        payload = {
+            "model": model.model_id,
+            "messages": messages,
+            "temperature": temperature
+        }
+        if max_tokens:
+            payload["max_tokens"] = max_tokens
+            
+        async with httpx.AsyncClient(timeout=120.0) as client:
             resp = await client.post(url, headers=headers, json=payload)
             resp.raise_for_status()
             data = resp.json()

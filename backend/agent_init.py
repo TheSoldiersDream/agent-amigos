@@ -721,6 +721,12 @@ LLM_CONFIGS = {
         "model": os.environ.get("GROQ_MODEL", get_default_model() or "llama-3.3-70b-versatile"),
         "supported_models": ["llama-3.3-70b-versatile"],
     },
+    "zai": {
+        "base": os.environ.get("GLM_API_BASE") or os.environ.get("ZAI_API_BASE", "https://open.bigmodel.cn/api/paas/v4/"),
+        "key": os.environ.get("GLM_API_KEY") or os.environ.get("ZAI_API_KEY") or os.environ.get("ZHIPU_API_KEY", ""),
+        "model": os.environ.get("GLM_MODEL") or os.environ.get("ZAI_MODEL", "glm-4.7-flash"),
+        "supported_models": ["glm-4.7-flash", "glm-4-9b-fast", "glm-4-flash"],
+    },
     "github": {
         "base": os.environ.get("GITHUB_API_BASE", "https://models.inference.ai.azure.com"),
         "key": os.environ.get("GITHUB_TOKEN", os.environ.get("GITHUB_COPILOT_TOKEN", "")),
@@ -1316,9 +1322,13 @@ async def openwork_stop_server():
     return {"success": True, "message": "OpenCode server stopped"}
 
 @app.post("/openwork/sessions")
-def openwork_create_session(workspace_path: str = Body(...), prompt: str = Body(...)):
+def openwork_create_session(
+    workspace_path: str = Body(...), 
+    prompt: str = Body(...),
+    model: Optional[str] = Body(None)
+):
     """Create a new OpenWork session"""
-    return openwork_manager.create_session(workspace_path, prompt)
+    return openwork_manager.create_session(workspace_path, prompt, model)
 
 @app.post("/openwork/sessions/from-template")
 def openwork_create_session_from_template(
@@ -4021,19 +4031,20 @@ def openwork_get_skills_tool(workspace_path: Optional[str] = None):
     }
 
 
-def openwork_create_session(workspace_path: Optional[str], prompt: str):
+def openwork_create_session(workspace_path: Optional[str], prompt: str, model: Optional[str] = None):
     """Create a new OpenWork session for an agentic workflow.
     
     Args:
         workspace_path: Path to the workspace (use current workspace if unsure)
         prompt: Description of the task/workflow to execute
+        model: Optional model to use (defaulting to system default)
     
     Returns:
         Session details including session_id for tracking
     """
     try:
         target = workspace_path or _default_openwork_workspace()
-        return openwork_manager.create_session(target, prompt)
+        return openwork_manager.create_session(target, prompt, model)
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -7526,7 +7537,9 @@ def _get_env_name_for_provider(provider: str) -> Optional[str]:
         'groq': 'GROQ_API_KEY',
         'github': 'GITHUB_TOKEN',
         'ollama': 'OLLAMA_BASE',
-        'deepseek': 'DEEPSEEK_API_KEY'
+        'deepseek': 'DEEPSEEK_API_KEY',
+        'zai': 'GLM_API_KEY',
+        'openrouter': 'OPENROUTER_API_KEY'
     }
     return env_name_map.get(provider)
 
@@ -7612,6 +7625,21 @@ def validate_provider_cfg(provider: str):
             detail = f"github_status:{r.status_code}"
             if r.status_code in (401, 403):
                 suggestion = 'Check the GITHUB_TOKEN scope and validity (PAT).'
+        elif provider in ('zai', 'openai', 'groq', 'deepseek', 'openrouter', 'grok'):
+            # API providers that return 401 when auth is missing (means service is reachable)
+            base = cfg.get('base', '')
+            try:
+                r = _session.get(base or 'http://127.0.0.1', timeout=5)
+                # 200 = OK, 401 = service reachable but needs auth (valid), 404 = endpoint exists
+                ok = r.status_code in (200, 401, 404)
+                detail = f"base_status:{r.status_code}"
+                if r.status_code == 401 and has_key:
+                    ok = True
+                    suggestion = 'API key configured. Service is reachable.'
+                elif r.status_code == 401 and not has_key:
+                    suggestion = f'API endpoint is reachable. Set your API key to enable this provider.'
+            except Exception as e:
+                detail = str(e)
         else:
             base = cfg.get('base', '')
             try:
